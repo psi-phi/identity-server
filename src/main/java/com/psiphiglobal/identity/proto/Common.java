@@ -660,21 +660,12 @@ public final class Common {
         getSignerCertIdBytes();
 
     /**
-     * <code>.identity.proto.Signature.Algorithm algorithm = 2;</code>
-     */
-    int getAlgorithmValue();
-    /**
-     * <code>.identity.proto.Signature.Algorithm algorithm = 2;</code>
-     */
-    com.psiphiglobal.identity.proto.Common.Signature.Algorithm getAlgorithm();
-
-    /**
-     * <code>bytes data = 3;</code>
+     * <code>bytes data = 2;</code>
      */
     com.google.protobuf.ByteString getData();
 
     /**
-     * <code>uint64 timestamp = 4;</code>
+     * <code>uint64 timestamp = 3;</code>
      */
     long getTimestamp();
   }
@@ -691,7 +682,6 @@ public final class Common {
     }
     private Signature() {
       signerCertId_ = "";
-      algorithm_ = 0;
       data_ = com.google.protobuf.ByteString.EMPTY;
       timestamp_ = 0L;
     }
@@ -727,18 +717,12 @@ public final class Common {
               signerCertId_ = s;
               break;
             }
-            case 16: {
-              int rawValue = input.readEnum();
-
-              algorithm_ = rawValue;
-              break;
-            }
-            case 26: {
+            case 18: {
 
               data_ = input.readBytes();
               break;
             }
-            case 32: {
+            case 24: {
 
               timestamp_ = input.readUInt64();
               break;
@@ -764,113 +748,6 @@ public final class Common {
       return com.psiphiglobal.identity.proto.Common.internal_static_identity_proto_Signature_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.psiphiglobal.identity.proto.Common.Signature.class, com.psiphiglobal.identity.proto.Common.Signature.Builder.class);
-    }
-
-    /**
-     * Protobuf enum {@code identity.proto.Signature.Algorithm}
-     */
-    public enum Algorithm
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>UNKNOWN = 0;</code>
-       */
-      UNKNOWN(0),
-      /**
-       * <code>SHA256_RSA = 1;</code>
-       */
-      SHA256_RSA(1),
-      /**
-       * <code>SHA256_ECDSA = 2;</code>
-       */
-      SHA256_ECDSA(2),
-      UNRECOGNIZED(-1),
-      ;
-
-      /**
-       * <code>UNKNOWN = 0;</code>
-       */
-      public static final int UNKNOWN_VALUE = 0;
-      /**
-       * <code>SHA256_RSA = 1;</code>
-       */
-      public static final int SHA256_RSA_VALUE = 1;
-      /**
-       * <code>SHA256_ECDSA = 2;</code>
-       */
-      public static final int SHA256_ECDSA_VALUE = 2;
-
-
-      public final int getNumber() {
-        if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
-        }
-        return value;
-      }
-
-      /**
-       * @deprecated Use {@link #forNumber(int)} instead.
-       */
-      @java.lang.Deprecated
-      public static Algorithm valueOf(int value) {
-        return forNumber(value);
-      }
-
-      public static Algorithm forNumber(int value) {
-        switch (value) {
-          case 0: return UNKNOWN;
-          case 1: return SHA256_RSA;
-          case 2: return SHA256_ECDSA;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<Algorithm>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          Algorithm> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<Algorithm>() {
-              public Algorithm findValueByNumber(int number) {
-                return Algorithm.forNumber(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(ordinal());
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return com.psiphiglobal.identity.proto.Common.Signature.getDescriptor().getEnumTypes().get(0);
-      }
-
-      private static final Algorithm[] VALUES = values();
-
-      public static Algorithm valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        if (desc.getIndex() == -1) {
-          return UNRECOGNIZED;
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int value;
-
-      private Algorithm(int value) {
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:identity.proto.Signature.Algorithm)
     }
 
     public static final int SIGNER_CERT_ID_FIELD_NUMBER = 1;
@@ -907,35 +784,19 @@ public final class Common {
       }
     }
 
-    public static final int ALGORITHM_FIELD_NUMBER = 2;
-    private int algorithm_;
-    /**
-     * <code>.identity.proto.Signature.Algorithm algorithm = 2;</code>
-     */
-    public int getAlgorithmValue() {
-      return algorithm_;
-    }
-    /**
-     * <code>.identity.proto.Signature.Algorithm algorithm = 2;</code>
-     */
-    public com.psiphiglobal.identity.proto.Common.Signature.Algorithm getAlgorithm() {
-      com.psiphiglobal.identity.proto.Common.Signature.Algorithm result = com.psiphiglobal.identity.proto.Common.Signature.Algorithm.valueOf(algorithm_);
-      return result == null ? com.psiphiglobal.identity.proto.Common.Signature.Algorithm.UNRECOGNIZED : result;
-    }
-
-    public static final int DATA_FIELD_NUMBER = 3;
+    public static final int DATA_FIELD_NUMBER = 2;
     private com.google.protobuf.ByteString data_;
     /**
-     * <code>bytes data = 3;</code>
+     * <code>bytes data = 2;</code>
      */
     public com.google.protobuf.ByteString getData() {
       return data_;
     }
 
-    public static final int TIMESTAMP_FIELD_NUMBER = 4;
+    public static final int TIMESTAMP_FIELD_NUMBER = 3;
     private long timestamp_;
     /**
-     * <code>uint64 timestamp = 4;</code>
+     * <code>uint64 timestamp = 3;</code>
      */
     public long getTimestamp() {
       return timestamp_;
@@ -956,14 +817,11 @@ public final class Common {
       if (!getSignerCertIdBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, signerCertId_);
       }
-      if (algorithm_ != com.psiphiglobal.identity.proto.Common.Signature.Algorithm.UNKNOWN.getNumber()) {
-        output.writeEnum(2, algorithm_);
-      }
       if (!data_.isEmpty()) {
-        output.writeBytes(3, data_);
+        output.writeBytes(2, data_);
       }
       if (timestamp_ != 0L) {
-        output.writeUInt64(4, timestamp_);
+        output.writeUInt64(3, timestamp_);
       }
     }
 
@@ -975,17 +833,13 @@ public final class Common {
       if (!getSignerCertIdBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, signerCertId_);
       }
-      if (algorithm_ != com.psiphiglobal.identity.proto.Common.Signature.Algorithm.UNKNOWN.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, algorithm_);
-      }
       if (!data_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, data_);
+          .computeBytesSize(2, data_);
       }
       if (timestamp_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(4, timestamp_);
+          .computeUInt64Size(3, timestamp_);
       }
       memoizedSize = size;
       return size;
@@ -1005,7 +859,6 @@ public final class Common {
       boolean result = true;
       result = result && getSignerCertId()
           .equals(other.getSignerCertId());
-      result = result && algorithm_ == other.algorithm_;
       result = result && getData()
           .equals(other.getData());
       result = result && (getTimestamp()
@@ -1022,8 +875,6 @@ public final class Common {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + SIGNER_CERT_ID_FIELD_NUMBER;
       hash = (53 * hash) + getSignerCertId().hashCode();
-      hash = (37 * hash) + ALGORITHM_FIELD_NUMBER;
-      hash = (53 * hash) + algorithm_;
       hash = (37 * hash) + DATA_FIELD_NUMBER;
       hash = (53 * hash) + getData().hashCode();
       hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
@@ -1149,8 +1000,6 @@ public final class Common {
         super.clear();
         signerCertId_ = "";
 
-        algorithm_ = 0;
-
         data_ = com.google.protobuf.ByteString.EMPTY;
 
         timestamp_ = 0L;
@@ -1178,7 +1027,6 @@ public final class Common {
       public com.psiphiglobal.identity.proto.Common.Signature buildPartial() {
         com.psiphiglobal.identity.proto.Common.Signature result = new com.psiphiglobal.identity.proto.Common.Signature(this);
         result.signerCertId_ = signerCertId_;
-        result.algorithm_ = algorithm_;
         result.data_ = data_;
         result.timestamp_ = timestamp_;
         onBuilt();
@@ -1225,9 +1073,6 @@ public final class Common {
         if (!other.getSignerCertId().isEmpty()) {
           signerCertId_ = other.signerCertId_;
           onChanged();
-        }
-        if (other.algorithm_ != 0) {
-          setAlgorithmValue(other.getAlgorithmValue());
         }
         if (other.getData() != com.google.protobuf.ByteString.EMPTY) {
           setData(other.getData());
@@ -1330,59 +1175,15 @@ public final class Common {
         return this;
       }
 
-      private int algorithm_ = 0;
-      /**
-       * <code>.identity.proto.Signature.Algorithm algorithm = 2;</code>
-       */
-      public int getAlgorithmValue() {
-        return algorithm_;
-      }
-      /**
-       * <code>.identity.proto.Signature.Algorithm algorithm = 2;</code>
-       */
-      public Builder setAlgorithmValue(int value) {
-        algorithm_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.identity.proto.Signature.Algorithm algorithm = 2;</code>
-       */
-      public com.psiphiglobal.identity.proto.Common.Signature.Algorithm getAlgorithm() {
-        com.psiphiglobal.identity.proto.Common.Signature.Algorithm result = com.psiphiglobal.identity.proto.Common.Signature.Algorithm.valueOf(algorithm_);
-        return result == null ? com.psiphiglobal.identity.proto.Common.Signature.Algorithm.UNRECOGNIZED : result;
-      }
-      /**
-       * <code>.identity.proto.Signature.Algorithm algorithm = 2;</code>
-       */
-      public Builder setAlgorithm(com.psiphiglobal.identity.proto.Common.Signature.Algorithm value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        
-        algorithm_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.identity.proto.Signature.Algorithm algorithm = 2;</code>
-       */
-      public Builder clearAlgorithm() {
-        
-        algorithm_ = 0;
-        onChanged();
-        return this;
-      }
-
       private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>bytes data = 3;</code>
+       * <code>bytes data = 2;</code>
        */
       public com.google.protobuf.ByteString getData() {
         return data_;
       }
       /**
-       * <code>bytes data = 3;</code>
+       * <code>bytes data = 2;</code>
        */
       public Builder setData(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -1394,7 +1195,7 @@ public final class Common {
         return this;
       }
       /**
-       * <code>bytes data = 3;</code>
+       * <code>bytes data = 2;</code>
        */
       public Builder clearData() {
         
@@ -1405,13 +1206,13 @@ public final class Common {
 
       private long timestamp_ ;
       /**
-       * <code>uint64 timestamp = 4;</code>
+       * <code>uint64 timestamp = 3;</code>
        */
       public long getTimestamp() {
         return timestamp_;
       }
       /**
-       * <code>uint64 timestamp = 4;</code>
+       * <code>uint64 timestamp = 3;</code>
        */
       public Builder setTimestamp(long value) {
         
@@ -1420,7 +1221,7 @@ public final class Common {
         return this;
       }
       /**
-       * <code>uint64 timestamp = 4;</code>
+       * <code>uint64 timestamp = 3;</code>
        */
       public Builder clearTimestamp() {
         
@@ -1500,12 +1301,9 @@ public final class Common {
       "Key\0226\n\talgorithm\030\001 \001(\0162#.identity.proto." +
       "PublicKey.Algorithm\022\014\n\004data\030\002 \001(\014\",\n\tAlg" +
       "orithm\022\013\n\007UNKNOWN\020\000\022\007\n\003RSA\020\001\022\t\n\005ECDSA\020\002\"" +
-      "\270\001\n\tSignature\022\026\n\016signer_cert_id\030\001 \001(\t\0226\n" +
-      "\talgorithm\030\002 \001(\0162#.identity.proto.Signat" +
-      "ure.Algorithm\022\014\n\004data\030\003 \001(\014\022\021\n\ttimestamp" +
-      "\030\004 \001(\004\":\n\tAlgorithm\022\013\n\007UNKNOWN\020\000\022\016\n\nSHA2" +
-      "56_RSA\020\001\022\020\n\014SHA256_ECDSA\020\002B)\n\037com.psiphi" +
-      "global.identity.protoB\006Commonb\006proto3"
+      "D\n\tSignature\022\026\n\016signer_cert_id\030\001 \001(\t\022\014\n\004" +
+      "data\030\002 \001(\014\022\021\n\ttimestamp\030\003 \001(\004B)\n\037com.psi" +
+      "phiglobal.identity.protoB\006Commonb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1530,7 +1328,7 @@ public final class Common {
     internal_static_identity_proto_Signature_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_identity_proto_Signature_descriptor,
-        new java.lang.String[] { "SignerCertId", "Algorithm", "Data", "Timestamp", });
+        new java.lang.String[] { "SignerCertId", "Data", "Timestamp", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

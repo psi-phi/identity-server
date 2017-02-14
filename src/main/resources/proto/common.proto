@@ -19,13 +19,6 @@ message PublicKey {
 
 message Signature {
     string signer_cert_id = 1;
-    Algorithm algorithm = 2;
-    bytes data = 3;
-    uint64 timestamp = 4;
-
-    enum Algorithm {
-        UNKNOWN = 0;
-        SHA256_RSA = 1;
-        SHA256_ECDSA = 2;
-    }
+    bytes data = 2;
+    uint64 timestamp = 3;
 }

@@ -96,7 +96,6 @@ public class CertificateHelper
                     sig.update(message);
                     if (sig.verify(signature))
                         return Common.Signature.newBuilder()
-                                .setAlgorithm(Common.Signature.Algorithm.SHA256_RSA)
                                 .setData(ByteString.copyFrom(signature))
                                 .build();
                     else
@@ -108,7 +107,6 @@ public class CertificateHelper
                     sig.update(message);
                     if (sig.verify(signature))
                         return Common.Signature.newBuilder()
-                                .setAlgorithm(Common.Signature.Algorithm.SHA256_ECDSA)
                                 .setData(ByteString.copyFrom(signature))
                                 .build();
                     else

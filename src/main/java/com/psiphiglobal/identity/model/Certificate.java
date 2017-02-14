@@ -70,7 +70,6 @@ public final class Certificate
         certificate.certData = certData;
 
         Signature selfSign = new Signature();
-        selfSign.algorithm = cert.getSelfSign().getAlgorithm().toString();
         selfSign.signerCertId = cert.getSelfSign().getSignerCertId();
         selfSign.encodedSignature = Base64.encodeBase64String(cert.getSelfSign().getData().toByteArray());
         selfSign.timestamp = OffsetDateTime.ofInstant(Instant.ofEpochMilli(cert.getSelfSign().getTimestamp()), ZoneOffset.UTC);
@@ -81,7 +80,6 @@ public final class Certificate
         for(Common.Signature signature: cert.getValidationsList())
         {
             Signature validation = new Signature();
-            validation.algorithm = signature.getAlgorithm().toString();
             validation.signerCertId = signature.getSignerCertId();
             validation.encodedSignature = Base64.encodeBase64String(signature.getData().toByteArray());
             validation.timestamp = OffsetDateTime.ofInstant(Instant.ofEpochMilli(signature.getTimestamp()), ZoneOffset.UTC);
@@ -129,9 +127,6 @@ public final class Certificate
     {
         @SerializedName("signer_cert_id")
         private String signerCertId;
-
-        @SerializedName("algorithm")
-        private String algorithm;
 
         @SerializedName("encoded_signature")
         private String encodedSignature;

@@ -1,6 +1,7 @@
 package com.psiphiglobal.identity.service;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.psiphiglobal.identity.blockchain.BlockchainApiManager;
 import com.psiphiglobal.identity.db.KeyValueStoreProvider;
 import com.psiphiglobal.identity.model.Certificate;
 import com.psiphiglobal.identity.proto.Common;
@@ -12,15 +13,27 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public class RegistrationService
+public class CertificateService
 {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public String initiate(String domainName, String orgName, String orgEmail, String orgCountry,
-                           String publicKeyAlgo, String base64EncodedX509PublicKey) throws InvalidDomainException,
+    public List<Certificate> fetchActiveCertificates(String domainName)
+    {
+        List<Organization.SignedCertificate> activeCerts = BlockchainApiManager.getInstance().getOrganizationIdentityApi().fetchActiveCertificates(domainName);
+        return activeCerts.stream()
+                .map(Certificate::parse)
+                .collect(Collectors.toList());
+    }
+
+    public String initiateRegistration(String domainName, String orgName, String orgEmail, String orgCountry,
+                                       String publicKeyAlgo, String base64EncodedX509PublicKey) throws InvalidDomainException,
                                                                                            InvalidOrgNameException,
                                                                                            InvalidEmailException,
                                                                                            InvalidCountryException,
@@ -63,7 +76,7 @@ public class RegistrationService
         return certId;
     }
 
-    public Certificate complete(String domainName, String certId, String signature, String autoValidationMechanismStr)
+    public Certificate completeRegistration(String domainName, String certId, String signature, String autoValidationMechanismStr)
             throws InvalidCertIdException, InvalidDomainException, InvalidSignatureException, AutoValidationException
     {
         // Validate Input
@@ -87,7 +100,7 @@ public class RegistrationService
         if (selfSign == null)
             throw new InvalidSignatureException();
 
-        Organization.AutoValidationMechanism autoValidationMechanism = Organization.AutoValidationMechanism.NONE;
+        Organization.AutoValidationMechanism autoValidationMechanism;
         try
         {
             autoValidationMechanism = Organization.AutoValidationMechanism.valueOf(autoValidationMechanismStr);
@@ -116,6 +129,10 @@ public class RegistrationService
                 .setData(certData)
                 .setSelfSign(selfSign)
                 .build();
+
+        // Blockchain API
+        BlockchainApiManager.getInstance().getOrganizationIdentityApi().addCertificate(signedCertificate);
+        KeyValueStoreProvider.getInstance().delete(certId);
 
         return Certificate.parse(signedCertificate);
     }

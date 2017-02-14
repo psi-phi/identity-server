@@ -1,7 +1,7 @@
 package com.psiphiglobal.identity.endpoints;
 
 import com.psiphiglobal.identity.model.Certificate;
-import com.psiphiglobal.identity.service.RegistrationService;
+import com.psiphiglobal.identity.service.CertificateService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
@@ -9,17 +9,28 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Path("/{domain_name}")
 public class DomainEndpoint extends AbstractEndpoint
 {
-    private RegistrationService registrationService;
+    private CertificateService certificateService;
 
     public DomainEndpoint()
     {
         super();
-        registrationService = new RegistrationService();
+        certificateService = new CertificateService();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public void fetchActiveCerts(@PathParam("domain_name") String domainName, @Suspended AsyncResponse asyncResponse)
+    {
+        workerPool.execute(() -> {
+            List<Certificate> certs = certificateService.fetchActiveCertificates(domainName);
+            asyncResponse.resume(buildSuccessJsonResponse(certs));
+        });
     }
 
     @POST
@@ -49,14 +60,14 @@ public class DomainEndpoint extends AbstractEndpoint
 
             try
             {
-                String token = registrationService.initiate(domainName, orgName, orgEmail, orgCountry, publicKeyAlgo, publicKey);
+                String token = certificateService.initiateRegistration(domainName, orgName, orgEmail, orgCountry, publicKeyAlgo, publicKey);
                 Map<String, String> response = new HashMap<>();
                 response.put("cert_id", token);
                 asyncResponse.resume(buildSuccessJsonResponse(response));
             }
-            catch (RegistrationService.InvalidPublicKeyException | RegistrationService.InvalidDomainException |
-                    RegistrationService.InvalidCountryException | RegistrationService.InvalidOrgNameException |
-                    RegistrationService.InvalidEmailException e)
+            catch (CertificateService.InvalidPublicKeyException | CertificateService.InvalidDomainException |
+                    CertificateService.InvalidCountryException | CertificateService.InvalidOrgNameException |
+                    CertificateService.InvalidEmailException e)
             {
                 asyncResponse.resume(Response.status(Response.Status.BAD_REQUEST).build());
                 return;
@@ -90,15 +101,15 @@ public class DomainEndpoint extends AbstractEndpoint
 
             try
             {
-                Certificate certificate = registrationService.complete(domainName, certId, signature, autoVerificationMechanism);
+                Certificate certificate = certificateService.completeRegistration(domainName, certId, signature, autoVerificationMechanism);
                 asyncResponse.resume(buildSuccessJsonResponse(certificate));
             }
-            catch (RegistrationService.InvalidDomainException | RegistrationService.InvalidCertIdException e)
+            catch (CertificateService.InvalidDomainException | CertificateService.InvalidCertIdException e)
             {
                 asyncResponse.resume(Response.status(Response.Status.BAD_REQUEST).build());
                 return;
             }
-            catch (RegistrationService.InvalidSignatureException | RegistrationService.AutoValidationException e)
+            catch (CertificateService.InvalidSignatureException | CertificateService.AutoValidationException e)
             {
                 asyncResponse.resume(Response.status(Response.Status.UNAUTHORIZED).build());
                 return;

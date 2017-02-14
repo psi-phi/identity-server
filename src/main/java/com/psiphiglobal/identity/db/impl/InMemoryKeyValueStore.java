@@ -1,4 +1,6 @@
-package com.psiphiglobal.identity.db;
+package com.psiphiglobal.identity.db.impl;
+
+import com.psiphiglobal.identity.db.KeyValueStore;
 
 import java.util.concurrent.ConcurrentHashMap;
 
