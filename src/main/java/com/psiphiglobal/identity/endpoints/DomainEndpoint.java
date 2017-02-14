@@ -1,15 +1,27 @@
 package com.psiphiglobal.identity.endpoints;
 
+import com.psiphiglobal.identity.model.Certificate;
+import com.psiphiglobal.identity.service.RegistrationService;
+
 import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.Map;
 
 @Path("/{domain_name}")
 public class DomainEndpoint extends AbstractEndpoint
 {
+    private RegistrationService registrationService;
+
+    public DomainEndpoint()
+    {
+        super();
+        registrationService = new RegistrationService();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -35,7 +47,20 @@ public class DomainEndpoint extends AbstractEndpoint
             String publicKeyAlgo = input.get("public_key_algo");
             String publicKey = input.get("public_key");
 
-            // TODO : Registration init logic
+            try
+            {
+                String token = registrationService.initiate(domainName, orgName, orgEmail, orgCountry, publicKeyAlgo, publicKey);
+                Map<String, String> response = new HashMap<>();
+                response.put("cert_id", token);
+                asyncResponse.resume(buildSuccessJsonResponse(response));
+            }
+            catch (RegistrationService.InvalidPublicKeyException | RegistrationService.InvalidDomainException |
+                    RegistrationService.InvalidCountryException | RegistrationService.InvalidOrgNameException |
+                    RegistrationService.InvalidEmailException e)
+            {
+                asyncResponse.resume(Response.status(Response.Status.BAD_REQUEST).build());
+                return;
+            }
         });
     }
 
@@ -63,7 +88,21 @@ public class DomainEndpoint extends AbstractEndpoint
             String signature = input.get("signature");
             String autoVerificationMechanism = input.get("auto_verification_mechanism");
 
-            // TODO :  Registration Completion logic
+            try
+            {
+                Certificate certificate = registrationService.complete(domainName, certId, signature, autoVerificationMechanism);
+                asyncResponse.resume(buildSuccessJsonResponse(certificate));
+            }
+            catch (RegistrationService.InvalidDomainException | RegistrationService.InvalidCertIdException e)
+            {
+                asyncResponse.resume(Response.status(Response.Status.BAD_REQUEST).build());
+                return;
+            }
+            catch (RegistrationService.InvalidSignatureException | RegistrationService.AutoValidationException e)
+            {
+                asyncResponse.resume(Response.status(Response.Status.UNAUTHORIZED).build());
+                return;
+            }
         });
     }
 }
