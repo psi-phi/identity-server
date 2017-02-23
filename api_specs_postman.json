@@ -1,0 +1,127 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Identity Server",
+		"_postman_id": "1287bbc6-65e7-e551-bf77-b56388327a01",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Initiate Certificate Registration",
+			"request": {
+				"url": "http://localhost:7070/psiphi.co.in",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"org_name\" : \"Psi Phi Global Solutions Pvt. Ltd.\",\n\t\"org_country\" : \"IN\",\n\t\"org_email\" : \"info@psiphi.co.in\",\n\t\"public_key_algo\" : \"RSA\",\n\t\"public_key\" : \"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCllN0hTCLsYhBuBydOIKMTjOmNcaekSUxE9kkbkWF+HesYK9np6IcyH5nzQlOU0twHVdZ2Bmu7qf8rhZ5JoIhpcJpXY85N0SZDpy3KvnF9DmpX1mg+FvEhEjTA9ixnrk5X6yRup3le/6x0tOzD6Tca4DmGCI0wFy+HgoODg82OLQIDAQAB\"\n}"
+				},
+				"description": ""
+			},
+			"response": [
+				{
+					"id": "12d2b726-5cd1-4f7b-9e3d-f2941ec6151b",
+					"name": "Sample",
+					"originalRequest": {
+						"url": "http://localhost:7070/psiphi.co.in",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"enabled": true,
+								"description": "The mime type of this content"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"org_name\" : \"Psi Phi Global Solutions Pvt. Ltd.\",\n\t\"org_country\" : \"IN\",\n\t\"org_email\" : \"info@psiphi.co.in\",\n\t\"public_key_algo\" : \"RSA\",\n\t\"public_key\" : \"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCllN0hTCLsYhBuBydOIKMTjOmNcaekSUxE9kkbkWF+HesYK9np6IcyH5nzQlOU0twHVdZ2Bmu7qf8rhZ5JoIhpcJpXY85N0SZDpy3KvnF9DmpX1mg+FvEhEjTA9ixnrk5X6yRup3le/6x0tOzD6Tca4DmGCI0wFy+HgoODg82OLQIDAQAB\"\n}"
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "text",
+					"header": [
+						{
+							"name": "Content-Length",
+							"key": "Content-Length",
+							"value": "57",
+							"description": "The length of the response body in octets (8-bit bytes)"
+						},
+						{
+							"name": "Content-Type",
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "The mime type of this content"
+						},
+						{
+							"name": "Date",
+							"key": "Date",
+							"value": "Thu, 23 Feb 2017 00:30:54 GMT",
+							"description": "The date and time that the message was sent"
+						}
+					],
+					"cookie": [],
+					"responseTime": 682,
+					"body": "{\"cert_id\":\"1xpA25jlvK920O5dCQVS4zlzBwx861sxuwpYWfOPuTU\"}"
+				}
+			]
+		},
+		{
+			"name": "Complete Certificate Registration (Self-Sign)",
+			"request": {
+				"url": "http://localhost:7070/psiphi.co.in/self-sign",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"cert_id\" : \"1xpA25jlvK920O5dCQVS4zlzBwx861sxuwpYWfOPuTU\",\n\t\"signature\" : \"Anp51+M1fZ5HVU+WnD6jKSJNdOnr4WQRg/DXlMVouLW0dF1f9hxYYuBympZSzRj9El+oNwJ8hnC8dr/Cf/i7d35kvSoV0Ez1389oU3/H47xYyLNr+asaZ4MN/jfrKa0sc2pXXx4m32AJdrtR5AH0ddb/umlYGMgt67XElA00uHU=\",\n\t\"auto_verification_mechanism\" : \"DNS\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Primary Certificate",
+			"request": {
+				"url": "http://localhost:7070/psiphi.co.in",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"cert_id\" : \"1xpA25jlvK920O5dCQVS4zlzBwx861sxuwpYWfOPuTU\",\n\t\"signature\" : \"aG7PJE5lH38R8+0HjKu8OwR0OWjIsxt/FkYMxxOrvfVODr5SebAB9N3pLuQCRi+qWr3DyQPI4eh6FNc1XAUQ7pHscVN8PDPZjsJxWs7UoxKDmLrHQ5gYALOh3FygYrwq2/2tR9Ox01fipRkYvz9g7PjZQdxf50y29ZA8o5W1ZlU=\",\n\t\"auto_verification_mechanism\" : \"DNS\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Certificate",
+			"request": {
+				"url": "http://localhost:7070/psiphi.co.in",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"cert_id\" : \"1xpA25jlvK920O5dCQVS4zlzBwx861sxuwpYWfOPuTU\",\n\t\"signature\" : \"aG7PJE5lH38R8+0HjKu8OwR0OWjIsxt/FkYMxxOrvfVODr5SebAB9N3pLuQCRi+qWr3DyQPI4eh6FNc1XAUQ7pHscVN8PDPZjsJxWs7UoxKDmLrHQ5gYALOh3FygYrwq2/2tR9Ox01fipRkYvz9g7PjZQdxf50y29ZA8o5W1ZlU=\",\n\t\"auto_verification_mechanism\" : \"DNS\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

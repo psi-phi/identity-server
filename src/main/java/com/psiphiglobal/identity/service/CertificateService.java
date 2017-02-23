@@ -4,40 +4,35 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.psiphiglobal.identity.blockchain.BlockchainApiManager;
 import com.psiphiglobal.identity.db.KeyValueStoreProvider;
 import com.psiphiglobal.identity.model.Certificate;
-import com.psiphiglobal.identity.proto.Common;
-import com.psiphiglobal.identity.proto.Organization;
+import com.psiphiglobal.identity.proto.*;
 import com.psiphiglobal.identity.service.helper.CertificateHelper;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.validator.routines.DomainValidator;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class CertificateService
 {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public List<Certificate> fetchActiveCertificates(String domainName)
+    public Certificate fetchActiveCertificate(String domainName)
     {
-        List<Organization.SignedCertificate> activeCerts = BlockchainApiManager.getInstance().getOrganizationIdentityApi().fetchActiveCertificates(domainName);
-        return activeCerts.stream()
-                .map(Certificate::parse)
-                .collect(Collectors.toList());
+        return Certificate.parse(BlockchainApiManager.getInstance().getOrganizationIdentityApi().fetchPrimaryCertificate(domainName));
+    }
+
+    public Certificate fetchCertificate(String certId)
+    {
+        return Certificate.parse(BlockchainApiManager.getInstance().getOrganizationIdentityApi().fetchCertificate(certId));
     }
 
     public String initiateRegistration(String domainName, String orgName, String orgEmail, String orgCountry,
-                                       String publicKeyAlgo, String base64EncodedX509PublicKey) throws InvalidDomainException,
-                                                                                           InvalidOrgNameException,
-                                                                                           InvalidEmailException,
-                                                                                           InvalidCountryException,
-                                                                                           InvalidPublicKeyException
+                                       String publicKeyAlgo, String base64EncodedX509PublicKey)
+            throws InvalidDomainException, InvalidOrgNameException, InvalidEmailException, InvalidCountryException, InvalidPublicKeyException
     {
         // Validate Input
         if (!DomainValidator.getInstance().isValid(domainName))
@@ -52,18 +47,18 @@ public class CertificateService
         if (!Arrays.asList(Locale.getISOCountries()).contains(orgCountry))
             throw new InvalidCountryException();
 
-        Common.PublicKey publicKey = CertificateHelper.parsePublicKey(publicKeyAlgo, base64EncodedX509PublicKey);
+        PublicKey publicKey = CertificateHelper.parsePublicKey(publicKeyAlgo, base64EncodedX509PublicKey);
         if (publicKey == null)
             throw new InvalidPublicKeyException();
 
         // Initialize models
-        Organization.OrganizationDetails orgDetails = Organization.OrganizationDetails.newBuilder()
+        OrganizationDetails orgDetails = OrganizationDetails.newBuilder()
                 .setName(orgName)
                 .setEmail(orgEmail)
                 .setCountry(orgCountry)
                 .build();
 
-        Organization.CertificateData certData = Organization.CertificateData.newBuilder()
+        CertificateData certData = CertificateData.newBuilder()
                 .setDomainName(domainName)
                 .setOrgDetails(orgDetails)
                 .setPublicKey(publicKey)
@@ -76,7 +71,7 @@ public class CertificateService
         return certId;
     }
 
-    public Certificate completeRegistration(String domainName, String certId, String signature, String autoValidationMechanismStr)
+    public String completeRegistration(String domainName, String certId, String signature, String autoValidationMechanismStr)
             throws InvalidCertIdException, InvalidDomainException, InvalidSignatureException, AutoValidationException
     {
         // Validate Input
@@ -84,10 +79,10 @@ public class CertificateService
         if (binaryCertData == null)
             throw new InvalidCertIdException();
 
-        Organization.CertificateData certData = null;
+        CertificateData certData = null;
         try
         {
-            certData = Organization.CertificateData.parseFrom(binaryCertData);
+            certData = CertificateData.parseFrom(binaryCertData);
         }
         catch (InvalidProtocolBufferException ignored)
         {
@@ -96,45 +91,47 @@ public class CertificateService
         if (!certData.getDomainName().equals(domainName))
             throw new InvalidDomainException();
 
-        Common.Signature selfSign = CertificateHelper.processSignature(certData, signature);
+        Signature selfSign = CertificateHelper.processSignature(certData, signature);
         if (selfSign == null)
             throw new InvalidSignatureException();
 
-        Organization.AutoValidationMechanism autoValidationMechanism;
+        AutoValidationMechanism autoValidationMechanism;
         try
         {
-            autoValidationMechanism = Organization.AutoValidationMechanism.valueOf(autoValidationMechanismStr);
+            autoValidationMechanism = AutoValidationMechanism.valueOf(autoValidationMechanismStr);
         }
         catch (Exception ignored)
         {
-            autoValidationMechanism = Organization.AutoValidationMechanism.NONE;
+            autoValidationMechanism = AutoValidationMechanism.NONE;
         }
 
         // Auto Validation
-        if(autoValidationMechanism == Organization.AutoValidationMechanism.DNS && !CertificateHelper.dnsValidate(domainName, certId))
+        if (autoValidationMechanism == AutoValidationMechanism.DNS && !CertificateHelper.dnsValidate(domainName, certId))
             throw new AutoValidationException();
 
         // Initiate Models
         Instant now = Instant.now();
         selfSign = selfSign.toBuilder()
                 .setSignerCertId(certId)
-                .setTimestamp(now.toEpochMilli())
+                .setTimestamp(now.getEpochSecond())
                 .build();
 
-        Organization.SignedCertificate signedCertificate = Organization.SignedCertificate.newBuilder()
+        SignedCertificate signedCertificate = SignedCertificate.newBuilder()
                 .setId(certId)
-                .setStatus(Organization.CertificateStatus.ACTIVE)
-                .setCreatedAt(now.toEpochMilli())
+                .setStatus(CertificateStatus.ACTIVE)
+                .setCreatedAt(now.getEpochSecond())
                 .setAutoValidation(autoValidationMechanism)
                 .setData(certData)
                 .setSelfSign(selfSign)
                 .build();
 
         // Blockchain API
-        BlockchainApiManager.getInstance().getOrganizationIdentityApi().addCertificate(signedCertificate);
+        String txId = BlockchainApiManager.getInstance().getOrganizationIdentityApi().addCertificate(signedCertificate);
         KeyValueStoreProvider.getInstance().delete(certId);
 
-        return Certificate.parse(signedCertificate);
+        LOGGER.debug("[Encoded SignedCertificate Proto] " + Base64.encodeBase64String(signedCertificate.toByteArray()));
+
+        return txId;
     }
 
     public class InvalidDomainException extends LoggableException

@@ -1,5 +1,6 @@
 package com.psiphiglobal.identity._core;
 
+import com.psiphiglobal.identity.endpoints.CertificateEndpoint;
 import com.psiphiglobal.identity.endpoints.DomainEndpoint;
 import com.psiphiglobal.identity.endpoints.HealthEndpoint;
 import com.psiphiglobal.identity.logging.RequestLogger;
@@ -29,6 +30,7 @@ public class Bootstrap extends Application
         /* Endpoints */
         resources.add(HealthEndpoint.class);
         resources.add(DomainEndpoint.class);
+        resources.add(CertificateEndpoint.class);
 
         /* Error Handler */
         resources.add(DefaultExceptionHandler.class);

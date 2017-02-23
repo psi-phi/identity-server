@@ -1,8 +1,9 @@
 package com.psiphiglobal.identity.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.psiphiglobal.identity.proto.Common;
-import com.psiphiglobal.identity.proto.Organization;
+import com.psiphiglobal.identity.proto.AutoValidationMechanism;
+import com.psiphiglobal.identity.proto.CertificateStatus;
+import com.psiphiglobal.identity.proto.SignedCertificate;
 import org.apache.commons.codec.binary.Base64;
 
 import java.time.Instant;
@@ -41,17 +42,20 @@ public final class Certificate
     {
     }
 
-    public static Certificate parse(Organization.SignedCertificate cert)
+    public static Certificate parse(SignedCertificate cert)
     {
+        if (cert == null)
+            return null;
+
         Certificate certificate = new Certificate();
         certificate.certId = cert.getId();
         certificate.statue = cert.getStatus().toString();
         certificate.createdAt = OffsetDateTime.ofInstant(Instant.ofEpochMilli(cert.getCreatedAt()), ZoneOffset.UTC);
 
-        if (cert.getStatus() == Organization.CertificateStatus.EXPIRED)
+        if (cert.getStatus() == CertificateStatus.EXPIRED)
             certificate.expiredAt = OffsetDateTime.ofInstant(Instant.ofEpochMilli(cert.getExpiredAt()), ZoneOffset.UTC);
 
-        certificate.isAutoValidated = cert.getAutoValidation() != Organization.AutoValidationMechanism.NONE;
+        certificate.isAutoValidated = cert.getAutoValidation() != AutoValidationMechanism.NONE;
 
         PublicKey publicKey = new PublicKey();
         publicKey.algorithm = cert.getData().getPublicKey().getAlgorithm().toString();
@@ -77,7 +81,7 @@ public final class Certificate
         certificate.selfSign = selfSign;
 
         certificate.validations = new ArrayList<>();
-        for(Common.Signature signature: cert.getValidationsList())
+        for(com.psiphiglobal.identity.proto.Signature signature: cert.getValidationsList())
         {
             Signature validation = new Signature();
             validation.signerCertId = signature.getSignerCertId();

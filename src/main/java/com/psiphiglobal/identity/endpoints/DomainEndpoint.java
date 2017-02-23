@@ -9,7 +9,6 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Path("/{domain_name}")
@@ -25,11 +24,15 @@ public class DomainEndpoint extends AbstractEndpoint
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public void fetchActiveCerts(@PathParam("domain_name") String domainName, @Suspended AsyncResponse asyncResponse)
+    public void fetchPrimaryCertificate(@PathParam("domain_name") String domainName, @Suspended AsyncResponse asyncResponse)
     {
-        workerPool.execute(() -> {
-            List<Certificate> certs = certificateService.fetchActiveCertificates(domainName);
-            asyncResponse.resume(buildSuccessJsonResponse(certs));
+        workerPool.execute(() ->
+        {
+            Certificate cert = certificateService.fetchActiveCertificate(domainName);
+            if (cert != null)
+                asyncResponse.resume(buildSuccessJsonResponse(cert));
+            else
+                asyncResponse.resume(Response.status(Response.Status.NOT_FOUND).build());
         });
     }
 
@@ -101,8 +104,10 @@ public class DomainEndpoint extends AbstractEndpoint
 
             try
             {
-                Certificate certificate = certificateService.completeRegistration(domainName, certId, signature, autoVerificationMechanism);
-                asyncResponse.resume(buildSuccessJsonResponse(certificate));
+                String txId = certificateService.completeRegistration(domainName, certId, signature, autoVerificationMechanism);
+                Map<String, String> response = new HashMap<>();
+                response.put("blockchain_tx_id", txId);
+                asyncResponse.resume(buildSuccessJsonResponse(response));
             }
             catch (CertificateService.InvalidDomainException | CertificateService.InvalidCertIdException e)
             {

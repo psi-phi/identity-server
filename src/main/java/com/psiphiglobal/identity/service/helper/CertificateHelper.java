@@ -1,8 +1,8 @@
 package com.psiphiglobal.identity.service.helper;
 
 import com.google.protobuf.ByteString;
-import com.psiphiglobal.identity.proto.Common;
-import com.psiphiglobal.identity.proto.Organization;
+import com.psiphiglobal.identity.proto.CertificateData;
+import com.psiphiglobal.identity.proto.PublicKey;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.xbill.DNS.*;
@@ -16,12 +16,12 @@ import java.util.List;
 
 public class CertificateHelper
 {
-    public static Common.PublicKey parsePublicKey(String algo, String base64EncodedX508PublicKey)
+    public static PublicKey parsePublicKey(String algo, String base64EncodedX508PublicKey)
     {
-        Common.PublicKey.Algorithm algorithm = null;
+        PublicKey.Algorithm algorithm = null;
         try
         {
-            algorithm = Common.PublicKey.Algorithm.valueOf(algo.toUpperCase());
+            algorithm = PublicKey.Algorithm.valueOf(algo.toUpperCase());
         }
         catch (Exception e)
         {
@@ -45,7 +45,7 @@ public class CertificateHelper
                     return null;
             }
 
-            return Common.PublicKey.newBuilder()
+            return PublicKey.newBuilder()
                     .setAlgorithm(algorithm)
                     .setData(ByteString.copyFrom(x509PublicKey))
                     .build();
@@ -56,7 +56,7 @@ public class CertificateHelper
         }
     }
 
-    public static String getCertId(Organization.CertificateData certData)
+    public static String getCertId(CertificateData certData)
     {
         byte[] rawCertData = certData.toByteArray();
         byte[] certHash = DigestUtils.sha256(rawCertData);
@@ -79,12 +79,12 @@ public class CertificateHelper
         }
     }
 
-    public static Common.Signature processSignature(Organization.CertificateData certData, String base64EncodedSignature)
+    public static com.psiphiglobal.identity.proto.Signature processSignature(CertificateData certData, String base64EncodedSignature)
     {
         try
         {
-            Common.PublicKey publicKey = certData.getPublicKey();
-            byte[] message = Base64.decodeBase64(getCertId(certData));
+            PublicKey publicKey = certData.getPublicKey();
+            byte[] message = getCertId(certData).getBytes();
             byte[] signature = Base64.decodeBase64(base64EncodedSignature);
 
             Signature sig = null;
@@ -95,7 +95,7 @@ public class CertificateHelper
                     sig.initVerify(KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKey.getData().toByteArray())));
                     sig.update(message);
                     if (sig.verify(signature))
-                        return Common.Signature.newBuilder()
+                        return com.psiphiglobal.identity.proto.Signature.newBuilder()
                                 .setData(ByteString.copyFrom(signature))
                                 .build();
                     else
@@ -106,7 +106,7 @@ public class CertificateHelper
                     sig.initVerify(KeyFactory.getInstance("EC").generatePublic(new X509EncodedKeySpec(publicKey.getData().toByteArray())));
                     sig.update(message);
                     if (sig.verify(signature))
-                        return Common.Signature.newBuilder()
+                        return com.psiphiglobal.identity.proto.Signature.newBuilder()
                                 .setData(ByteString.copyFrom(signature))
                                 .build();
                     else
