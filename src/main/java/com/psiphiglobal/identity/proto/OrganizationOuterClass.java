@@ -58,17 +58,21 @@ public final class OrganizationOuterClass {
       "\004data\030\006 \001(\0132\037.identity.proto.Certificate" +
       "Data\022,\n\tself_sign\030\007 \001(\0132\031.identity.proto" +
       ".Signature\022.\n\013validations\030\010 \003(\0132\031.identi" +
-      "ty.proto.Signature\"\217\001\n\017CertificateData\022\023" +
+      "ty.proto.Signature\"\263\001\n\017CertificateData\022\023" +
       "\n\013domain_name\030\001 \001(\t\0228\n\013org_details\030\002 \001(\013" +
       "2#.identity.proto.OrganizationDetails\022-\n" +
       "\npublic_key\030\003 \001(\0132\031.identity.proto.Publi" +
-      "cKey\"C\n\023OrganizationDetails\022\014\n\004name\030\001 \001(",
-      "\t\022\r\n\005email\030\002 \001(\t\022\017\n\007country\030\003 \001(\t*9\n\021Cer" +
-      "tificateStatus\022\n\n\006ACTIVE\020\000\022\013\n\007EXPIRED\020\001\022" +
-      "\013\n\007BLOCKED\020\002*9\n\027AutoValidationMechanism\022" +
-      "\013\n\007UNKNOWN\020\000\022\010\n\004NONE\020\001\022\007\n\003DNS\020\002B-\n\037com.p" +
-      "siphiglobal.identity.protoP\001Z\010identityb\006" +
-      "proto3"
+      "cKey\022\"\n\004role\030\004 \001(\0162\024.identity.proto.Role",
+      "\"C\n\023OrganizationDetails\022\014\n\004name\030\001 \001(\t\022\r\n" +
+      "\005email\030\002 \001(\t\022\017\n\007country\030\003 \001(\t*9\n\021Certifi" +
+      "cateStatus\022\n\n\006ACTIVE\020\000\022\013\n\007EXPIRED\020\001\022\013\n\007B" +
+      "LOCKED\020\002*9\n\027AutoValidationMechanism\022\013\n\007U" +
+      "NKNOWN\020\000\022\010\n\004NONE\020\001\022\007\n\003DNS\020\002*y\n\004Role\022\014\n\010C" +
+      "USTOMER\020\000\022\t\n\005ADMIN\020\001\022\r\n\tTEAM_LEAD\020\002\022\017\n\013K" +
+      "YC_ANALYST\020\003\022\026\n\022COMPLIANCE_OFFICER\020\004\022\013\n\007" +
+      "AUDITOR\020\005\022\023\n\017REQUESTING_BANK\020\006B-\n\037com.ps" +
+      "iphiglobal.identity.protoP\001Z\010identityb\006p" +
+      "roto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -100,7 +104,7 @@ public final class OrganizationOuterClass {
     internal_static_identity_proto_CertificateData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_identity_proto_CertificateData_descriptor,
-        new java.lang.String[] { "DomainName", "OrgDetails", "PublicKey", });
+        new java.lang.String[] { "DomainName", "OrgDetails", "PublicKey", "Role", });
     internal_static_identity_proto_OrganizationDetails_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_identity_proto_OrganizationDetails_fieldAccessorTable = new

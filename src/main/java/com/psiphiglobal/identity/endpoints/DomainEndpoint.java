@@ -60,10 +60,11 @@ public class DomainEndpoint extends AbstractEndpoint
             String orgEmail = input.get("org_email");
             String publicKeyAlgo = input.get("public_key_algo");
             String publicKey = input.get("public_key");
+            String roleType = input.get("role");
 
             try
             {
-                String token = certificateService.initiateRegistration(domainName, orgName, orgEmail, orgCountry, publicKeyAlgo, publicKey);
+                String token = certificateService.initiateRegistration(domainName, orgName, orgEmail, orgCountry, publicKeyAlgo, publicKey, roleType);
                 Map<String, String> response = new HashMap<>();
                 response.put("cert_id", token);
                 asyncResponse.resume(buildSuccessJsonResponse(response));

@@ -42,4 +42,13 @@ public interface CertificateDataOrBuilder extends
    * <code>.identity.proto.PublicKey public_key = 3;</code>
    */
   com.psiphiglobal.identity.proto.PublicKeyOrBuilder getPublicKeyOrBuilder();
+
+  /**
+   * <code>.identity.proto.Role role = 4;</code>
+   */
+  int getRoleValue();
+  /**
+   * <code>.identity.proto.Role role = 4;</code>
+   */
+  com.psiphiglobal.identity.proto.Role getRole();
 }

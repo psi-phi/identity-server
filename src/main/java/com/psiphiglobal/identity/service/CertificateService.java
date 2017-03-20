@@ -31,7 +31,7 @@ public class CertificateService
     }
 
     public String initiateRegistration(String domainName, String orgName, String orgEmail, String orgCountry,
-                                       String publicKeyAlgo, String base64EncodedX509PublicKey)
+                                       String publicKeyAlgo, String base64EncodedX509PublicKey, String roleStr)
             throws InvalidDomainException, InvalidOrgNameException, InvalidEmailException, InvalidCountryException, InvalidPublicKeyException
     {
         // Validate Input
@@ -51,6 +51,17 @@ public class CertificateService
         if (publicKey == null)
             throw new InvalidPublicKeyException();
 
+
+        Role role;
+        try
+        {
+            role = Role.valueOf(roleStr);
+        }
+        catch (Exception e)
+        {
+            role = Role.CUSTOMER;
+        }
+
         // Initialize models
         OrganizationDetails orgDetails = OrganizationDetails.newBuilder()
                 .setName(orgName)
@@ -62,6 +73,7 @@ public class CertificateService
                 .setDomainName(domainName)
                 .setOrgDetails(orgDetails)
                 .setPublicKey(publicKey)
+                .setRole(role)
                 .build();
 
         // Persist data for validation

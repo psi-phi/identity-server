@@ -16,6 +16,7 @@ public  final class CertificateData extends
   }
   private CertificateData() {
     domainName_ = "";
+    role_ = 0;
   }
 
   @java.lang.Override
@@ -73,6 +74,12 @@ public  final class CertificateData extends
               publicKey_ = subBuilder.buildPartial();
             }
 
+            break;
+          }
+          case 32: {
+            int rawValue = input.readEnum();
+
+            role_ = rawValue;
             break;
           }
         }
@@ -174,6 +181,22 @@ public  final class CertificateData extends
     return getPublicKey();
   }
 
+  public static final int ROLE_FIELD_NUMBER = 4;
+  private int role_;
+  /**
+   * <code>.identity.proto.Role role = 4;</code>
+   */
+  public int getRoleValue() {
+    return role_;
+  }
+  /**
+   * <code>.identity.proto.Role role = 4;</code>
+   */
+  public com.psiphiglobal.identity.proto.Role getRole() {
+    com.psiphiglobal.identity.proto.Role result = com.psiphiglobal.identity.proto.Role.valueOf(role_);
+    return result == null ? com.psiphiglobal.identity.proto.Role.UNRECOGNIZED : result;
+  }
+
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -195,6 +218,9 @@ public  final class CertificateData extends
     if (publicKey_ != null) {
       output.writeMessage(3, getPublicKey());
     }
+    if (role_ != com.psiphiglobal.identity.proto.Role.CUSTOMER.getNumber()) {
+      output.writeEnum(4, role_);
+    }
   }
 
   public int getSerializedSize() {
@@ -212,6 +238,10 @@ public  final class CertificateData extends
     if (publicKey_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getPublicKey());
+    }
+    if (role_ != com.psiphiglobal.identity.proto.Role.CUSTOMER.getNumber()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeEnumSize(4, role_);
     }
     memoizedSize = size;
     return size;
@@ -241,6 +271,7 @@ public  final class CertificateData extends
       result = result && getPublicKey()
           .equals(other.getPublicKey());
     }
+    result = result && role_ == other.role_;
     return result;
   }
 
@@ -261,6 +292,8 @@ public  final class CertificateData extends
       hash = (37 * hash) + PUBLIC_KEY_FIELD_NUMBER;
       hash = (53 * hash) + getPublicKey().hashCode();
     }
+    hash = (37 * hash) + ROLE_FIELD_NUMBER;
+    hash = (53 * hash) + role_;
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -393,6 +426,8 @@ public  final class CertificateData extends
         publicKey_ = null;
         publicKeyBuilder_ = null;
       }
+      role_ = 0;
+
       return this;
     }
 
@@ -426,6 +461,7 @@ public  final class CertificateData extends
       } else {
         result.publicKey_ = publicKeyBuilder_.build();
       }
+      result.role_ = role_;
       onBuilt();
       return result;
     }
@@ -476,6 +512,9 @@ public  final class CertificateData extends
       }
       if (other.hasPublicKey()) {
         mergePublicKey(other.getPublicKey());
+      }
+      if (other.role_ != 0) {
+        setRoleValue(other.getRoleValue());
       }
       onChanged();
       return this;
@@ -804,6 +843,50 @@ public  final class CertificateData extends
         publicKey_ = null;
       }
       return publicKeyBuilder_;
+    }
+
+    private int role_ = 0;
+    /**
+     * <code>.identity.proto.Role role = 4;</code>
+     */
+    public int getRoleValue() {
+      return role_;
+    }
+    /**
+     * <code>.identity.proto.Role role = 4;</code>
+     */
+    public Builder setRoleValue(int value) {
+      role_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.identity.proto.Role role = 4;</code>
+     */
+    public com.psiphiglobal.identity.proto.Role getRole() {
+      com.psiphiglobal.identity.proto.Role result = com.psiphiglobal.identity.proto.Role.valueOf(role_);
+      return result == null ? com.psiphiglobal.identity.proto.Role.UNRECOGNIZED : result;
+    }
+    /**
+     * <code>.identity.proto.Role role = 4;</code>
+     */
+    public Builder setRole(com.psiphiglobal.identity.proto.Role value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      
+      role_ = value.getNumber();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.identity.proto.Role role = 4;</code>
+     */
+    public Builder clearRole() {
+      
+      role_ = 0;
+      onChanged();
+      return this;
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {

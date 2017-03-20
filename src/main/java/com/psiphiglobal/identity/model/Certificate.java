@@ -70,6 +70,7 @@ public final class Certificate
         certData.domainName = cert.getData().getDomainName();
         certData.orgDetails = orgDetails;
         certData.publicKey = publicKey;
+        certData.role = cert.getData().getRole().toString();
 
         certificate.certData = certData;
 
@@ -104,6 +105,9 @@ public final class Certificate
 
         @SerializedName("public_key")
         private PublicKey publicKey;
+
+        @SerializedName("role")
+        private String role;
     }
 
     private static class OrgDetails
