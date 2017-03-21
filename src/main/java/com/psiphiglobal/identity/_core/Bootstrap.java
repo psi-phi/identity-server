@@ -32,6 +32,9 @@ public class Bootstrap extends Application
         resources.add(DomainEndpoint.class);
         resources.add(CertificateEndpoint.class);
 
+        /* CORS Filter */
+        resources.add(CorsResponseFilter.class);
+
         /* Error Handler */
         resources.add(DefaultExceptionHandler.class);
 
